@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RBXGEN PRANK - Generator Robux Prank</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --dark:#0b0e14; --card:#151922; --card2:#11151d; --border:#252b3b;
+    --green:#00b06f; --green2:#00c97e; --gold:#f59e0b; --red:#f43f5e;
+    --txt:#f1f5f9; --sub:#94a3b8; --sub2:#64748b;
+  }
+  html{ color-scheme:dark; }
+  body{
+    background-color:var(--dark);
+    background-image:
+      radial-gradient(circle at 15% 15%, rgba(0,176,111,.12) 0%, transparent 35%),
+      radial-gradient(circle at 85% 80%, rgba(59,130,246,.08) 0%, transparent 40%);
+    color:var(--txt); min-height:100vh; overflow-x:hidden;
+    font-family:'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    padding-bottom:86px;
+  }
+  .display-font{ font-family:'Arial Black','Segoe UI',Roboto,sans-serif; letter-spacing:-.02em; }
+
+  /* ---------- HEADER ---------- */
+  header{ position:sticky; top:0; z-index:30; backdrop-filter:blur(10px);
+    background:rgba(11,14,20,.85); border-bottom:1px solid var(--border); }
+  .head-in{ max-width:768px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo{ width:42px; height:42px; border-radius:12px; flex:none;
+    background:linear-gradient(135deg,#34d399,var(--green));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px rgba(0,176,111,.30); }
+  .logo svg{ width:24px; height:24px; color:#fff; }
+  .brand h1{ font-size:19px; font-weight:800; color:#fff; }
+  .brand h1 span{ color:var(--green2); }
+  .tagprank{ font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:2px 7px; border-radius:999px; background:rgba(244,63,94,.15);
+    color:#fda4af; border:1px solid rgba(244,63,94,.35); vertical-align:middle; margin-left:6px; }
+  .brand p{ font-size:11px; color:var(--sub); margin-top:1px; }
+  .head-actions{ display:flex; align-items:center; gap:8px; }
+  .icon-btn{ width:38px; height:38px; border-radius:12px; background:var(--card);
+    border:1px solid var(--border); color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .icon-btn:active{ transform:scale(.94); }
+  .icon-btn svg{ width:18px; height:18px; }
+  .server-badge{ display:flex; align-items:center; gap:7px; padding:7px 11px; border-radius:12px;
+    background:var(--card); border:1px solid var(--border); font-size:11px; font-weight:600; color:#cbd5e1; }
+  .dotwrap{ position:relative; width:8px; height:8px; }
+  .dot{ position:absolute; inset:0; border-radius:50%; background:#34d399; }
+  .dotping{ position:absolute; inset:0; border-radius:50%; background:#34d399; animation:ping 1.4s cubic-bezier(0,0,.2,1) infinite; }
+  @keyframes ping{ 0%{ transform:scale(1); opacity:.8;} 80%,100%{ transform:scale(2.6); opacity:0;} }
+  @media (max-width:560px){ .server-badge{ display:none; } }
+
+  main{ max-width:768px; margin:0 auto; padding:20px 16px 0; }
+  section{ margin-bottom:22px; }
+
+  /* ---------- KARTU ---------- */
+  .card{ position:relative; border-radius:18px; overflow:hidden;
+    background:linear-gradient(180deg,var(--card),var(--card2));
+    border:1px solid var(--border); padding:20px; box-shadow:0 18px 40px rgba(0,0,0,.45); }
+  .glow{ position:absolute; top:-70px; right:-70px; width:170px; height:170px; border-radius:50%;
+    background:rgba(0,176,111,.10); filter:blur(40px); pointer-events:none; }
+  .card label.title{ font-size:15px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px; }
+  .card label.title svg{ width:18px; height:18px; color:#34d399; }
+  .hint{ font-size:12px; color:var(--sub); margin:6px 0 14px; line-height:1.55; }
+  .hint strong{ color:#34d399; }
+
+  .row{ display:flex; gap:12px; }
+  @media (max-width:560px){ .row{ flex-direction:column; } }
+  .input-wrap{ position:relative; flex:1; }
+  .input-wrap .ic{ position:absolute; left:14px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:#34d399; pointer-events:none; }
+  .input-wrap .suffix{ position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:11px; font-weight:700; color:var(--sub2); pointer-events:none; }
+  input[type=text]{ width:100%; padding:14px 44px 14px 44px; border-radius:13px; background:var(--dark);
+    border:1px solid var(--border); color:#fff; font-size:17px; font-weight:700; outline:none; transition:border-color .15s, box-shadow .15s; }
+  input[type=text]:focus{ border-color:var(--green); box-shadow:0 0 0 3px rgba(0,176,111,.25); }
+  input[type=text]::placeholder{ color:#475569; font-weight:400; font-size:13px; }
+  .err{ display:none; margin-top:9px; font-size:12px; color:#fb7185; font-weight:600; }
+  .err.show{ display:block; }
+
+  .btn-gen{ position:relative; overflow:hidden; border:none; cursor:pointer;
+    padding:14px 26px; border-radius:13px; color:#fff; font-weight:800; font-size:15px;
+    background:linear-gradient(90deg,var(--green),#10b981);
+    box-shadow:0 10px 24px rgba(0,176,111,.28);
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s; }
+  .btn-gen:active{ transform:scale(.97); }
+  .btn-gen::after{ content:''; position:absolute; top:-50%; left:-70%; width:40%; height:220%;
+    background:rgba(255,255,255,.22); transform:rotate(30deg); transition:left .5s; }
+  .btn-gen:hover::after{ left:140%; }
+  .btn-gen svg{ width:17px; height:17px; }
+
+  /* ---------- PAKET ---------- */
+  .sec-head{ display:flex; align-items:flex-end; justify-content:space-between; padding:0 4px; margin-bottom:12px; }
+  .sec-head h2{ font-size:16px; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px; }
+  .sec-head h2 svg{ width:16px; height:16px; color:#34d399; }
+  .sec-head p{ font-size:11px; color:var(--sub); margin-top:2px; }
+  .range-badge{ font-size:11px; font-weight:600; padding:5px 10px; border-radius:9px;
+    background:var(--card); border:1px solid var(--border); color:#cbd5e1; white-space:nowrap; }
+  .pkg{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:13px 16px; border-radius:14px; background:var(--card); border:1px solid var(--border);
+    margin-bottom:10px; transition:border-color .15s, background .15s; }
+  .pkg:hover{ border-color:rgba(0,176,111,.5); background:#1a202c; }
+  .pkg-left{ display:flex; align-items:center; gap:13px; min-width:0; }
+  .pkg-ic{ width:44px; height:44px; border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,176,111,.10); border:1px solid rgba(0,176,111,.25); color:#34d399; }
+  .pkg-ic.hot{ background:rgba(245,158,11,.13); border-color:rgba(245,158,11,.32); color:#fbbf24; }
+  .pkg-ic svg{ width:23px; height:23px; }
+  .pkg-amt{ font-size:18px; font-weight:800; color:#fff; display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .pkg-amt span.cur{ font-size:13px; font-weight:700; color:#34d399; }
+  .pkg-tag{ font-size:10px; font-weight:700; padding:3px 8px; border-radius:7px; border:1px solid var(--border); background:#1e2432; color:#cbd5e1; }
+  .pkg-tag.pop{ color:#6ee7b7; background:rgba(0,176,111,.14); border-color:rgba(0,176,111,.32); }
+  .pkg-tag.hot{ color:#fcd34d; background:rgba(245,158,11,.14); border-color:rgba(245,158,11,.32); }
+  .pkg-tag.max{ color:#fda4af; background:rgba(244,63,94,.13); border-color:rgba(244,63,94,.32); }
+  .pkg-sub{ font-size:11px; color:var(--sub); margin-top:2px; }
+  .btn-small{ padding:10px 18px; font-size:13px; border-radius:11px; flex:none; }
+
+  /* ---------- STATISTIK + PENGATURAN ---------- */
+  .grid2{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  @media (max-width:560px){ .grid2{ grid-template-columns:1fr 1fr 1fr; gap:8px; } }
+  .stat{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:13px 12px; text-align:center; }
+  .stat .num{ font-size:19px; font-weight:800; color:#fff; }
+  .stat .lbl{ font-size:10px; color:var(--sub); margin-top:3px; text-transform:uppercase; letter-spacing:.05em; }
+  .setrow{ display:flex; align-items:center; justify-content:space-between; padding:11px 2px; border-bottom:1px dashed var(--border); }
+  .setrow:last-child{ border-bottom:none; }
+  .setrow .t{ font-size:13px; font-weight:600; color:#e2e8f0; }
+  .setrow .d{ font-size:11px; color:var(--sub); margin-top:1px; }
+  .switch{ position:relative; width:46px; height:26px; flex:none; cursor:pointer; }
+  .switch input{ display:none; }
+  .track{ position:absolute; inset:0; border-radius:999px; background:#2a3040; transition:background .2s; }
+  .track::after{ content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#94a3b8; transition:all .2s; }
+  .switch input:checked + .track{ background:var(--green); }
+  .switch input:checked + .track::after{ left:23px; background:#fff; }
+
+  /* ---------- HASIL PRANK + RIWAYAT ---------- */
+  .lastresult{ display:none; }
+  .lastresult.show{ display:block; }
+  .stamp{ display:inline-block; font-weight:900; letter-spacing:.14em; font-size:13px; color:#fb7185;
+    border:2px solid rgba(244,63,94,.65); padding:4px 12px; border-radius:9px; transform:rotate(-3deg);
+    background:rgba(244,63,94,.08); text-transform:uppercase; }
+  .lr-amt{ font-size:26px; font-weight:900; color:#fff; margin:10px 0 2px; }
+  .lr-amt span{ color:#34d399; font-size:16px; }
+  .lr-note{ font-size:12.5px; color:var(--sub); line-height:1.6; }
+  .lr-note strong{ color:#fda4af; }
+  .btn-ghost{ margin-top:13px; padding:11px 16px; border-radius:11px; cursor:pointer;
+    background:var(--dark); border:1px solid var(--border); color:#e2e8f0; font-weight:700; font-size:13px; }
+  .btn-ghost:active{ transform:scale(.97); }
+  .hist-item{ display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:11px 13px; border-radius:12px; background:var(--dark); border:1px solid var(--border); margin-bottom:8px; font-size:13px; }
+  .hist-item .who{ color:#cbd5e1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .hist-item .who strong{ color:#fff; }
+  .hist-item .amt{ color:#34d399; font-weight:800; }
+  .badge-prank{ font-size:10px; font-weight:800; letter-spacing:.06em; padding:4px 9px; border-radius:8px;
+    background:rgba(244,63,94,.14); color:#fda4af; border:1px solid rgba(244,63,94,.32); flex:none; }
+  .hist-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:11px; }
+  .hist-head h3{ font-size:14px; font-weight:800; color:#fff; }
+  .link-btn{ background:none; border:none; color:var(--sub); font-size:12px; cursor:pointer; }
+  .link-btn:hover{ color:#fb7185; }
+  .empty-note{ font-size:12px; color:var(--sub2); text-align:center; padding:8px 0 2px; }
+
+  footer{ max-width:768px; margin:4px auto 0; padding:0 16px; font-size:11px; color:var(--sub2); line-height:1.6; text-align:center; }
+  .corner-prank{ position:fixed; right:10px; bottom:10px; z-index:20; font-size:11px; font-weight:800;
+    letter-spacing:.1em; color:rgba(244,63,94,.85); text-transform:uppercase; pointer-events:none; }
+
+  /* ---------- MODAL ---------- */
+  .modal-bg{ position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center;
+    padding:16px; background:rgba(0,0,0,.78); backdrop-filter:blur(4px); }
+  .modal-bg.open{ display:flex; }
+  .modal-box{ width:100%; max-width:430px; border-radius:18px; background:var(--card); border:1px solid var(--border);
+    box-shadow:0 30px 60px rgba(0,0,0,.6); overflow:hidden; transform:scale(.95); opacity:0; transition:all .18s; }
+  .modal-bg.open .modal-box{ transform:scale(1); opacity:1; }
+  .modal-head{ padding:15px 20px; display:flex; align-items:center; justify-content:space-between;
+    background:linear-gradient(90deg,rgba(0,176,111,.12),transparent); border-bottom:1px solid var(--border); }
+  .modal-head .tt{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:16px; color:#fff; }
+  .modal-head .tt .mi{ width:32px; height:32px; border-radius:9px; background:rgba(0,176,111,.18);
+    border:1px solid rgba(0,176,111,.4); color:#34d399; display:flex; align-items:center; justify-content:center; }
+  .modal-head .tt .mi svg{ width:17px; height:17px; }
+  .x-btn{ width:32px; height:32px; border-radius:9px; border:none; background:transparent; color:var(--sub);
+    font-size:17px; cursor:pointer; }
+  .x-btn:hover{ color:#fff; background:rgba(255,255,255,.06); }
+  .modal-body{ padding:20px; }
+  .summary{ padding:14px; border-radius:13px; background:var(--dark); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:17px; }
+  .summary .k{ font-size:11px; color:var(--sub); }
+  .summary .v{ font-size:22px; font-weight:900; color:#fff; display:flex; align-items:center; gap:7px; margin-top:2px; }
+  .summary .v svg{ width:22px; height:22px; color:#34d399; }
+  .summary .v .cur{ font-size:10px; font-weight:800; padding:3px 7px; border-radius:6px; background:rgba(0,176,111,.18); color:#6ee7b7; }
+  .free-tag{ font-size:11px; font-weight:700; color:#34d399; background:rgba(0,176,111,.1);
+    padding:5px 9px; border-radius:8px; border:1px solid rgba(0,176,111,.25); }
+  .fld label{ display:block; font-size:13px; font-weight:600; color:#e2e8f0; margin-bottom:8px; }
+  .safe-note{ margin-top:9px; font-size:11px; color:var(--sub); display:flex; gap:6px; align-items:flex-start; line-height:1.5; }
+  .safe-note svg{ width:14px; height:14px; color:#34d399; flex:none; margin-top:1px; }
+  .modal-actions{ display:flex; gap:11px; margin-top:19px; }
+  .btn-cancel{ width:34%; padding:13px; border-radius:12px; background:var(--dark); color:#cbd5e1;
+    font-weight:600; font-size:14px; border:1px solid var(--border); cursor:pointer; }
+  .btn-send{ width:66%; }
+  .loading{ text-align:center; padding:10px 0 4px; display:none; }
+  .spinner{ position:relative; width:64px; height:64px; margin:0 auto 15px; }
+  .spinner .ring{ position:absolute; inset:0; border-radius:50%; border:4px solid var(--border); }
+  .spinner .arc{ position:absolute; inset:0; border-radius:50%; border:4px solid var(--green); border-top-color:transparent; animation:spin .8s linear infinite; }
+  .spinner svg{ position:absolute; inset:0; margin:auto; width:26px; height:26px; color:#34d399; animation:pulse 1s ease-in-out infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+  @keyframes pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.45;} }
+  .loading h4{ font-size:16px; font-weight:800; color:#fff; word-break:break-word; }
+  .loading p{ font-size:12px; color:var(--sub); margin-top:4px; }
+  .bar{ width:100%; height:8px; border-radius:999px; background:var(--dark); border:1px solid var(--border); overflow:hidden; margin-top:15px; }
+  .bar > div{ height:100%; width:0%; background:linear-gradient(90deg,var(--green),#34d399); transition:width .3s; }
+
+  /* ---------- NOTIFIKASI MELAYANG ---------- */
+  #notifWrap{ position:fixed; inset:0; z-index:50; display:none; align-items:center; justify-content:center; padding:16px; pointer-events:none; }
+  #notifWrap.show{ display:flex; }
+  .notif{ pointer-events:auto; width:100%; max-width:380px; border-radius:18px; text-align:center; padding:22px;
+    background:rgba(17,23,34,.97); border:2px solid var(--green); color:#fff; position:relative;
+    box-shadow:0 25px 60px rgba(0,0,0,.85); animation:pop .35s cubic-bezier(.16,1,.3,1) forwards, glowPulse 2.5s infinite ease-in-out; }
+  .notif.pranked{ border-color:var(--red); animation:pop .35s cubic-bezier(.16,1,.3,1) forwards; }
+  @keyframes pop{ 0%{ opacity:0; transform:translateY(18px) scale(.92);} 100%{ opacity:1; transform:translateY(0) scale(1);} }
+  @keyframes glowPulse{ 0%,100%{ box-shadow:0 0 18px rgba(0,176,111,.4), 0 25px 60px rgba(0,0,0,.85);} 50%{ box-shadow:0 0 34px rgba(0,176,111,.7), 0 25px 60px rgba(0,0,0,.9);} }
+  .notif .x{ position:absolute; top:11px; right:11px; width:30px; height:30px; border-radius:8px; border:none;
+    background:rgba(255,255,255,.06); color:var(--sub); font-size:14px; cursor:pointer; }
+  .notif .ni{ width:54px; height:54px; border-radius:15px; margin:0 auto 12px; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,176,111,.16); border:1px solid rgba(0,176,111,.45); color:#34d399; }
+  .notif.pranked .ni{ background:rgba(244,63,94,.14); border-color:rgba(244,63,94,.45); color:#fb7185; }
+  .notif .ni svg{ width:27px; height:27px; }
+  .pill{ display:inline-block; font-size:10px; font-weight:800; letter-spacing:.07em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px; background:rgba(0,176,111,.18); color:#6ee7b7; border:1px solid rgba(0,176,111,.32); }
+  .notif.pranked .pill{ background:rgba(244,63,94,.16); color:#fda4af; border-color:rgba(244,63,94,.35); }
+  .notif h4{ font-size:19px; font-weight:900; margin-top:9px; word-break:break-word; }
+  .notif h4 .at{ color:#34d399; }
+  .notif.pranked h4 .at{ color:#fb7185; }
+  .notif p{ font-size:13px; color:#cbd5e1; margin-top:8px; line-height:1.6; }
+  .notif p strong{ color:#fcd34d; }
+  .notif.pranked p strong{ color:#fda4af; }
+  .btn-ok{ margin-top:16px; width:100%; padding:12px; border-radius:12px; border:none; cursor:pointer;
+    background:var(--green); color:#fff; font-weight:800; font-size:14px; box-shadow:0 8px 20px rgba(0,176,111,.3); }
+  .notif.pranked .btn-ok{ background:var(--red); box-shadow:0 8px 20px rgba(244,63,94,.3); }
+  .btn-ok:active{ transform:scale(.97); }
+  .shake{ animation:shakeAnim .45s ease-in-out; }
+  @keyframes shakeAnim{ 0%,100%{ transform:translateX(0);} 20%{ transform:translateX(-9px);} 40%{ transform:translateX(8px);} 60%{ transform:translateX(-6px);} 80%{ transform:translateX(4px);} }
+  #confetti{ position:fixed; inset:0; z-index:60; pointer-events:none; display:none; }
+  #toast{ position:fixed; left:50%; bottom:78px; transform:translateX(-50%) translateY(20px); z-index:70;
+    background:#1e293b; color:#fff; font-size:13px; font-weight:600; padding:11px 18px; border-radius:999px;
+    border:1px solid var(--border); opacity:0; pointer-events:none; transition:all .25s; box-shadow:0 12px 30px rgba(0,0,0,.5); }
+  #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-in">
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.28L18.8 8v8L12 19.72 5.2 16V8L12 4.28zM12 7a5 5 0 100 10 5 5 0 000-10zm0 3a2 2 0 110 4 2 2 0 010-4z"/></svg></div>
+      <div>
+        <h1>RBX<span>GEN</span><span class="tagprank">Prank</span></h1>
+        <p>Generator Robux Prank &bull; Buat Lucu-Lucuan</p>
+      </div>
+    </div>
+    <div class="head-actions">
+      <div class="server-badge"><span class="dotwrap"><span class="dotping"></span><span class="dot"></span></span>Server Aktif</div>
+      <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Suara">
+        <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="none"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- INPUT KUSTOM -->
+  <section>
+    <div class="card">
+      <div class="glow"></div>
+      <label class="title" for="customInput">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2m0 20v-2m5-15 1.5-1.5M4.5 20.5 6 19m13.5-13L21 5M3 10H1m22 0h-2M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" opacity="0"/><path d="M6 21 21 6l-3-3L3 18l3 3z"/><path d="m14 7 3 3"/></svg>
+        Tulis Jumlah Robux yang Kamu Mau
+      </label>
+      <p class="hint">Ketik berapa saja jumlah Robux yang ingin kamu generate, lalu klik tombol <strong>Generate</strong>. Namanya juga prank, angkanya bebas sesukamu.</p>
+      <div class="row">
+        <div class="input-wrap">
+          <svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.28L18.8 8v8L12 19.72 5.2 16V8L12 4.28zM12 7a5 5 0 100 10 5 5 0 000-10zm0 3a2 2 0 110 4 2 2 0 010-4z"/></svg>
+          <input type="text" id="customInput" inputmode="numeric" placeholder="Contoh: 75.000 atau ketik bebas..." oninput="formatCustom(this)" onkeydown="if(event.key==='Enter') customGenerate()">
+          <span class="suffix">R$</span>
+        </div>
+        <button class="btn-gen" onclick="customGenerate()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          <span>Generate</span>
+        </button>
+      </div>
+      <div class="err" id="customErr">Masukkan jumlah angka Robux terlebih dahulu (minimal 1 Robux).</div>
+    </div>
+  </section>
+
+  <!-- PAKET -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Pilih Paket Instan Robux</h2>
+        <p>Pilih nominal di bawah lalu tekan Generate di sampingnya</p>
+      </div>
+      <span class="range-badge">50 R$ - 100.000 R$</span>
+    </div>
+    <div id="pkgList"></div>
+  </section>
+
+  <!-- HASIL PRANK TERAKHIR -->
+  <section class="lastresult" id="lastResult">
+    <div class="card">
+      <span class="stamp">Prank Terakhir</span>
+      <div class="lr-amt" id="lrAmt">0 <span>ROBUX</span></div>
+      <p class="lr-note" id="lrNote"></p>
+      <button class="btn-ghost" onclick="shareResult()">Salin Hasil Prank</button>
+    </div>
+  </section>
+
+  <!-- STATISTIK -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10m6 10V4m6 16v-7m4 7H2" transform="translate(0,0)"/><path d="M3 21h18"/></svg>Statistik Prank Kamu</h2>
+        <p>Tersimpan di HP ini saja, tidak dikirim ke mana pun</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="stat"><div class="num" id="stCount">0</div><div class="lbl">Total Prank</div></div>
+      <div class="stat"><div class="num" id="stSum">0</div><div class="lbl">Robux Prank</div></div>
+      <div class="stat"><div class="num" id="stMax">0</div><div class="lbl">Prank Terbesar</div></div>
+    </div>
+  </section>
+
+  <!-- PENGATURAN -->
+  <section>
+    <div class="card">
+      <label class="title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Pengaturan Prank
+      </label>
+      <div style="margin-top:8px">
+        <div class="setrow">
+          <div><div class="t">Efek Suara</div><div class="d">Bunyi klik, proses, dan pengungkapan prank</div></div>
+          <label class="switch"><input type="checkbox" id="setSound" checked onchange="saveSettings()"><span class="track"></span></label>
+        </div>
+        <div class="setrow">
+          <div><div class="t">Efek Kejut</div><div class="d">Layar bergetar saat prank terungkap</div></div>
+          <label class="switch"><input type="checkbox" id="setShake" checked onchange="saveSettings()"><span class="track"></span></label>
+        </div>
+        <div class="setrow">
+          <div><div class="t">Hujan Konfeti</div><div class="d">Konfeti beterbangan saat prank terungkap</div></div>
+          <label class="switch"><input type="checkbox" id="setConfetti" checked onchange="saveSettings()"><span class="track"></span></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIWAYAT -->
+  <section id="histSection" style="display:none">
+    <div class="card">
+      <div class="hist-head">
+        <h3>Riwayat Generate</h3>
+        <button class="link-btn" onclick="clearHistory()">Bersihkan</button>
+      </div>
+      <div id="histList"></div>
+    </div>
+  </section>
+
+  <footer>
+    Aplikasi lelucon (prank). Tidak terhubung ke Roblox, tidak mengirim data apa pun ke server mana pun, dan tidak menghasilkan Robux sungguhan. Semua proses hanya animasi di HP ini. Robux asli hanya bisa didapat dari pembelian resmi atau penukaran hadiah resmi.
+  </footer>
+</main>
+
+<div class="corner-prank">Prank</div>
+
+<!-- MODAL USERNAME + LOADING -->
+<div class="modal-bg" id="usernameModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="tt">
+        <span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></span>
+        Konfirmasi Penerima
+      </div>
+      <button class="x-btn" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div id="formStep">
+        <div class="summary">
+          <div>
+            <div class="k">Jumlah yang akan di-generate:</div>
+            <div class="v">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.28L18.8 8v8L12 19.72 5.2 16V8L12 4.28zM12 7a5 5 0 100 10 5 5 0 000-10zm0 3a2 2 0 110 4 2 2 0 010-4z"/></svg>
+              <span id="modalAmt">500</span><span class="cur">ROBUX</span>
+            </div>
+          </div>
+          <span class="free-tag">GRATIS</span>
+        </div>
+        <div class="fld">
+          <label for="usernameInput">Masukkan Username Roblox:</label>
+          <div class="input-wrap">
+            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-weight:700;pointer-events:none">@</span>
+            <input type="text" id="usernameInput" placeholder="Ketik username di sini..." autocomplete="off" style="padding-left:32px" onkeydown="if(event.key==='Enter') submitGenerate()">
+          </div>
+          <div class="err" id="userErr">Username tidak boleh kosong.</div>
+          <p class="safe-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            Tenang, aplikasi prank ini tidak pernah meminta password dan tidak mengirim apa pun ke internet.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">Batal</button>
+          <button class="btn-gen btn-send" onclick="submitGenerate()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            <span>Generate Sekarang</span>
+          </button>
+        </div>
+      </div>
+      <div class="loading" id="loadStep">
+        <div class="spinner">
+          <div class="ring"></div><div class="arc"></div>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.28L18.8 8v8L12 19.72 5.2 16V8L12 4.28zM12 7a5 5 0 100 10 5 5 0 000-10zm0 3a2 2 0 110 4 2 2 0 010-4z"/></svg>
+        </div>
+        <h4 id="loadTitle">Mencari Akun...</h4>
+        <p id="loadSub">Menyiapkan proses generate</p>
+        <div class="bar"><div id="loadBar"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFIKASI MELAYANG -->
+<div id="notifWrap"><div class="notif" id="notifCard"></div></div>
+<canvas id="confetti"></canvas>
+<div id="toast"></div>
+
+<script>
+    /* ================= DATA PAKET (50 -> 100 -> 500 -> ... -> 100.000) ================= */
+    var PACKAGES = [
+      { amount: 50,     tag: "Starter",  cls: "" },
+      { amount: 100,    tag: "Basic",    cls: "" },
+      { amount: 500,    tag: "Populer",  cls: "pop" },
+      { amount: 1000,   tag: "Hemat",    cls: "pop" },
+      { amount: 2500,   tag: "Gamer",    cls: "" },
+      { amount: 5000,   tag: "Pro",      cls: "" },
+      { amount: 10000,  tag: "Elite",    cls: "" },
+      { amount: 25000,  tag: "Sultan",   cls: "hot" },
+      { amount: 50000,  tag: "Mega Pack",cls: "hot" },
+      { amount: 100000, tag: "MAX LIMIT",cls: "max" }
+    ];
+    var RBX_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.28L18.8 8v8L12 19.72 5.2 16V8L12 4.28zM12 7a5 5 0 100 10 5 5 0 000-10zm0 3a2 2 0 110 4 2 2 0 010-4z"/></svg>';
+
+    var selectedAmount = 0;
+    var morphTimer = null, hideTimer = null;
+    var lastPrank = null;
+
+    /* ================= PENYIMPANAN LOKAL ================= */
+    function lsGet(key, def) {
+      try { var v = localStorage.getItem(key); return v === null ? def : JSON.parse(v); }
+      catch (e) { return def; }
+    }
+    function lsSet(key, val) {
+      try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+    }
+    var settings = lsGet('rbxgen_settings', { sound: true, shake: true, confetti: true });
+    var historyData = lsGet('rbxgen_history', []);
+    var statsData = lsGet('rbxgen_stats', { count: 0, sum: 0, max: 0 });
+
+    /* ================= SUARA SINTETIS ================= */
+    var audioCtx = null;
+    function playSound(type) {
+      if (!settings.sound) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        var now = audioCtx.currentTime;
+        function tone(freq, t0, dur, wave, vol, slideTo) {
+          var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+          o.type = wave; o.frequency.setValueAtTime(freq, now + t0);
+          if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, now + t0 + dur);
+          g.gain.setValueAtTime(vol, now + t0);
+          g.gain.exponentialRampToValueAtTime(0.001, now + t0 + dur);
+          o.connect(g); g.connect(audioCtx.destination);
+          o.start(now + t0); o.stop(now + t0 + dur);
+        }
+        if (type === 'click') tone(520, 0, 0.08, 'sine', 0.12, 760);
+        else if (type === 'error') tone(180, 0, 0.18, 'sawtooth', 0.10, 130);
+        else if (type === 'done') { tone(587, 0, 0.14, 'triangle', 0.16); tone(880, 0.12, 0.3, 'triangle', 0.16); }
+        else if (type === 'reveal') { tone(392, 0, 0.16, 'square', 0.10); tone(330, 0.16, 0.16, 'square', 0.10); tone(262, 0.32, 0.34, 'square', 0.12); }
+      } catch (e) {}
+    }
+    function toggleSound() {
+      settings.sound = !settings.sound;
+      document.getElementById('setSound').checked = settings.sound;
+      saveSettings(false);
+      refreshSoundIcon();
+      if (settings.sound) playSound('click');
+    }
+    function refreshSoundIcon() {
+      document.getElementById('soundIconOn').style.display = settings.sound ? '' : 'none';
+      document.getElementById('soundIconOff').style.display = settings.sound ? 'none' : '';
+    }
+    function saveSettings(reread) {
+      if (reread !== false) {
+        settings.sound = document.getElementById('setSound').checked;
+        settings.shake = document.getElementById('setShake').checked;
+        settings.confetti = document.getElementById('setConfetti').checked;
+      }
+      lsSet('rbxgen_settings', settings);
+      refreshSoundIcon();
+    }
+
+    /* ================= FORMAT ANGKA ================= */
+    function fmt(n) { return Number(n).toLocaleString('id-ID'); }
+    function formatCustom(el) {
+      document.getElementById('customErr').classList.remove('show');
+      var raw = el.value.replace(/\D/g, '');
+      if (!raw) { el.value = ''; return; }
+      el.value = fmt(parseInt(raw.slice(0, 9), 10));
+    }
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 2200);
+    }
+
+    /* ================= RENDER PAKET ================= */
+    function renderPackages() {
+      var html = '';
+      for (var i = 0; i < PACKAGES.length; i++) {
+        var p = PACKAGES[i], hot = p.amount >= 25000;
+        html += '<div class="pkg">'
+          + '<div class="pkg-left"><div class="pkg-ic' + (hot ? ' hot' : '') + '">' + RBX_SVG + '</div>'
+          + '<div><div class="pkg-amt">' + fmt(p.amount) + ' <span class="cur">Robux</span>'
+          + '<span class="pkg-tag ' + p.cls + '">' + p.tag + '</span></div>'
+          + '<div class="pkg-sub">Generate instan di aplikasi prank ini</div></div></div>'
+          + '<button class="btn-gen btn-small" onclick="openModal(' + p.amount + ')"><span>Generate</span></button>'
+          + '</div>';
+      }
+      document.getElementById('pkgList').innerHTML = html;
+    }
+
+    /* ================= MODAL ================= */
+    function customGenerate() {
+      var raw = document.getElementById('customInput').value.replace(/\D/g, '');
+      var val = parseInt(raw, 10);
+      if (!raw || isNaN(val) || val <= 0) {
+        playSound('error');
+        document.getElementById('customErr').classList.add('show');
+        document.getElementById('customInput').focus();
+        return;
+      }
+      openModal(val);
+    }
+    function openModal(amount) {
+      playSound('click');
+      selectedAmount = amount;
+      document.getElementById('modalAmt').textContent = fmt(amount);
+      document.getElementById('formStep').style.display = '';
+      document.getElementById('loadStep').style.display = 'none';
+      document.getElementById('userErr').classList.remove('show');
+      var m = document.getElementById('usernameModal');
+      m.classList.add('open');
+      setTimeout(function () { document.getElementById('usernameInput').focus(); }, 60);
+    }
+    function closeModal() {
+      document.getElementById('usernameModal').classList.remove('open');
+    }
+    function submitGenerate() {
+      var inp = document.getElementById('usernameInput');
+      var user = inp.value.trim().replace(/^@+/, '');
+      if (!user) {
+        playSound('error');
+        document.getElementById('userErr').classList.add('show');
+        inp.focus();
+        return;
+      }
+      playSound('click');
+      document.getElementById('formStep').style.display = 'none';
+      var load = document.getElementById('loadStep');
+      load.style.display = 'block';
+      var bar = document.getElementById('loadBar');
+      var title = document.getElementById('loadTitle');
+      var sub = document.getElementById('loadSub');
+      var amount = selectedAmount, fAmt = fmt(amount);
+      bar.style.width = '15%';
+      title.textContent = 'Mencari akun @' + user + '...';
+      sub.textContent = 'Menghubungkan ke server prank';
+      setTimeout(function () {
+        bar.style.width = '58%';
+        title.textContent = 'Menyiapkan ' + fAmt + ' Robux...';
+        sub.textContent = 'Memasukkan ke antrean prank untuk @' + user;
+      }, 550);
+      setTimeout(function () {
+        bar.style.width = '100%';
+        title.textContent = 'Proses Selesai';
+        sub.textContent = 'Menyiapkan hasil...';
+      }, 1150);
+      setTimeout(function () {
+        closeModal();
+        recordPrank(user, amount);
+        showNotification(user, amount);
+      }, 1550);
+    }
+
+    /* ================= CATAT + STATISTIK + RIWAYAT ================= */
+    function recordPrank(user, amount) {
+      lastPrank = { user: user, amount: amount };
+      historyData.unshift({ user: user, amount: amount, time: Date.now() });
+      if (historyData.length > 30) historyData.length = 30;
+      lsSet('rbxgen_history', historyData);
+      statsData.count += 1;
+      statsData.sum += amount;
+      if (amount > statsData.max) statsData.max = amount;
+      lsSet('rbxgen_stats', statsData);
+      renderStats(); renderHistory(); renderLastResult();
+    }
+    function renderStats() {
+      document.getElementById('stCount').textContent = fmt(statsData.count);
+      document.getElementById('stSum').textContent = fmt(statsData.sum);
+      document.getElementById('stMax').textContent = fmt(statsData.max);
+    }
+    function renderHistory() {
+      var sec = document.getElementById('histSection');
+      var list = document.getElementById('histList');
+      if (!historyData.length) { sec.style.display = 'none'; return; }
+      sec.style.display = '';
+      var html = '';
+      for (var i = 0; i < historyData.length; i++) {
+        var h = historyData[i];
+        html += '<div class="hist-item"><span class="who"><strong>@' + esc(h.user) + '</strong> &bull; <span class="amt">' + fmt(h.amount) + ' R$</span></span><span class="badge-prank">PRANK</span></div>';
+      }
+      list.innerHTML = html;
+    }
+    function clearHistory() {
+      historyData = []; lsSet('rbxgen_history', historyData);
+      renderHistory(); playSound('click');
+    }
+    function renderLastResult() {
+      if (!lastPrank) {
+        var saved = lsGet('rbxgen_last', null);
+        if (saved) lastPrank = saved; else return;
+      }
+      lsSet('rbxgen_last', lastPrank);
+      document.getElementById('lastResult').classList.add('show');
+      document.getElementById('lrAmt').innerHTML = fmt(lastPrank.amount) + ' <span>ROBUX</span>';
+      document.getElementById('lrNote').innerHTML = 'Untuk akun <strong style="color:#fff">@' + esc(lastPrank.user) + '</strong> &mdash; dan seperti semua hasil di aplikasi ini: <strong>ini prank</strong>. Tidak ada Robux yang dikirim, ditunggu, atau akan datang. Yang beneran cuma lucunya.';
+    }
+    function shareResult() {
+      if (!lastPrank) return;
+      var text = 'Aku baru saja men-generate ' + fmt(lastPrank.amount) + ' Robux untuk @' + lastPrank.user
+        + ' di RBXGEN Prank... dan itu PRANK. Generator Robux gratis itu tidak ada. Ini cuma lelucon dari aplikasi prank.';
+      function done() { showToast('Hasil prank tersalin. Bagikan ke temanmu.'); playSound('done'); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    }
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    /* ================= NOTIFIKASI MELAYANG + PENGUNGKAPAN ================= */
+    function showNotification(user, amount) {
+      var wrap = document.getElementById('notifWrap');
+      var card = document.getElementById('notifCard');
+      clearTimeout(morphTimer); clearTimeout(hideTimer);
+      card.classList.remove('pranked');
+      card.innerHTML =
+          '<button class="x" onclick="dismissNotif()">&#10005;</button>'
+        + '<div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9.2"/></svg></div>'
+        + '<span class="pill">Generate Selesai</span>'
+        + '<h4>' + fmt(amount) + ' Robux untuk <span class="at">@' + esc(user) + '</span></h4>'
+        + '<p>Permintaanmu sudah selesai diproses di aplikasi ini. Tunggu sebentar, ada pengumuman penting tentang Robux ini...</p>'
+        + '<button class="btn-ok" onclick="revealPrank()">Lihat Pengumumannya</button>';
+      wrap.dataset.user = user;
+      wrap.dataset.amount = amount;
+      wrap.classList.add('show');
+      playSound('done');
+      morphTimer = setTimeout(revealPrank, 2100);
+    }
+    function revealPrank() {
+      var wrap = document.getElementById('notifWrap');
+      if (!wrap.classList.contains('show')) return;
+      clearTimeout(morphTimer);
+      var user = wrap.dataset.user, amount = Number(wrap.dataset.amount);
+      var card = document.getElementById('notifCard');
+      card.classList.add('pranked');
+      card.innerHTML =
+          '<button class="x" onclick="dismissNotif()">&#10005;</button>'
+        + '<div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>'
+        + '<span class="pill">Pengungkapan</span>'
+        + '<h4>INI PRANK</h4>'
+        + '<p>Tidak ada <strong>' + fmt(amount) + ' Robux</strong> yang dikirim ke akun <strong>@' + esc(user) + '</strong>, dan tidak ada yang perlu ditunggu. Generator Robux gratis itu <strong>tidak ada</strong> &mdash; Robux asli hanya dari pembelian resmi atau penukaran hadiah resmi, misalnya Microsoft Rewards.</p>'
+        + '<button class="btn-ok" onclick="dismissNotif()">Oke, Aku Kena Prank</button>';
+      playSound('reveal');
+      if (settings.shake) {
+        card.classList.remove('shake');
+        void card.offsetWidth;
+        card.classList.add('shake');
+      }
+      if (settings.confetti) launchConfetti();
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(dismissNotif, 16000);
+    }
+    function dismissNotif() {
+      clearTimeout(morphTimer); clearTimeout(hideTimer);
+      document.getElementById('notifWrap').classList.remove('show');
+    }
+
+    /* ================= KONFETI ================= */
+    function launchConfetti() {
+      var cv = document.getElementById('confetti');
+      var ctx = cv.getContext('2d');
+      cv.width = window.innerWidth; cv.height = window.innerHeight;
+      cv.style.display = 'block';
+      var colors = ['#00b06f', '#34d399', '#f59e0b', '#3b82f6', '#f43f5e', '#e2e8f0'];
+      var parts = [];
+      for (var i = 0; i < 130; i++) {
+        parts.push({
+          x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.35,
+          w: 6 + Math.random() * 6, h: 8 + Math.random() * 8,
+          vy: 2.2 + Math.random() * 3.2, vx: -1.4 + Math.random() * 2.8,
+          rot: Math.random() * Math.PI, vr: -0.12 + Math.random() * 0.24,
+          color: colors[i % colors.length]
+        });
+      }
+      var start = Date.now();
+      (function frame() {
+        var elapsed = Date.now() - start;
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        for (var j = 0; j < parts.length; j++) {
+          var p = parts[j];
+          p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        }
+        if (elapsed < 2400) requestAnimationFrame(frame);
+        else { ctx.clearRect(0, 0, cv.width, cv.height); cv.style.display = 'none'; }
+      })();
+    }
+
+    /* ================= INIT ================= */
+    window.onload = function () {
+      document.getElementById('setSound').checked = settings.sound;
+      document.getElementById('setShake').checked = settings.shake;
+      document.getElementById('setConfetti').checked = settings.confetti;
+      refreshSoundIcon();
+      renderPackages();
+      renderStats();
+      renderHistory();
+      renderLastResult();
+    };
+</script>
+</body>
+</html>
